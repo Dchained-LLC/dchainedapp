@@ -1,26 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import MarketsPage from './MarketsPage';
+import CoinPage from './CoinPage';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = {
+    page: 1,
+    value: '',
+    totalCoins: 0
+  }
+
+  updatePage = (newPage, newValue, totalCoins) => {
+    this.setState({page: newPage, value: newValue, totalCoins: totalCoins})
+    this.render();
+  }
+  
+  render() {
+    if(this.state.page == 1) {
+      return this.drawPage1();
+    }
+    else if(this.state.page == 2) {
+      return this.drawPage2(this.state.value, this.state.totalCoins);
+    }
+  }
+
+  drawPage1() {
+    return (
+      <div>
+        <MarketsPage updatePage = {this.updatePage}></MarketsPage>
+      </div>
+    );
+  }
+  
+  drawPage2(coin, totalCoins) {
+    return (
+      <div>
+        <CoinPage value = {coin} totalCoins = {totalCoins} updatePage = {this.updatePage}></CoinPage>
+      </div>
+    );
+  }
 }
-
 export default App;

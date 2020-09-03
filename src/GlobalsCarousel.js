@@ -30,9 +30,9 @@ class GlobalsCarousel extends Component {
         <div>
             <CssBaseline />
             <Typography variant="h5" component="h5">
-                <Box color="text.primary">24-Hour Market Activity</Box>
+                <Box color="text.primary" mt={1} ml={1} mr={1}>24-Hour Market Activity</Box>
             </Typography>
-            <Box component="div" mt={2.5} mb={2.5}>
+            <Box component="div" mt={2.5} mb={2.5} ml={1} mr={1}>
                 <Carousel breakPoints={breakPoints} itemsToScroll={4} itemsToShow={4}>
                     {this.state.globalsData.map(item => <div key={item.id}><div style={{textAlign: 'center', fontSize: 15}}>{item.title}</div><div style={{fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>{item.value}</div><br/><div>
                     <LineChart

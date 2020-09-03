@@ -56,15 +56,19 @@
   position: relative;
 }
 
-.hasTooltip .tooltip {
+.hasTooltip .theTooltip {
   visibility: hidden;
 }
 
-.hasTooltip:hover .tooltip {
+.hasTooltip:hover .theTooltip {
   visibility: visible;
 }
 
-.tooltip {
+.hasTooltip:active .theTooltip {
+  visibility: visible;
+}
+
+.theTooltip {
   padding: 1em;
   border-radius: 6px;
   position: absolute;
@@ -244,6 +248,10 @@
 }
 
 .information:hover .myTooltip {
+  visibility: visible;
+}
+
+.information:active .myTooltip {
   visibility: visible;
 }
 

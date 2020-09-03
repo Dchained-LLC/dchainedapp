@@ -1,23 +1,19 @@
 import React, { Component } from 'react';
 import CoinHeader from './CoinHeader';
 import CoinFinancialInfo from './CoinFinancialInfo';
-import CoinChart from './CoinChart';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Navbar from 'react-bootstrap//Navbar';
-import Nav from 'react-bootstrap//Nav';
-import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
-import Dropdown from 'react-bootstrap/Dropdown';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Feeds from './Feeds';
 import CoinFinancialInfoBottom from './CoinFinancialInfoBottom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import CoinChartWithVolume from './CoinChartWithVolume';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -47,15 +43,8 @@ class CoinPage extends Component {
         this.totalCoins = props.totalCoins;
         this.state= {
             value: 0,
-            isDesktop: false,
-            selectedMetric: 'Galaxy Score™'
         };
-        this.updatePredicate = this.updatePredicate.bind(this);
     }
-
-    updatePredicate() {
-        this.setState({ isDesktop: window.innerWidth > 999 });
-      }
 
     setValue = (newValue) => {
         this.setState({value: newValue});
@@ -73,8 +62,6 @@ class CoinPage extends Component {
     }
 
     render() {
-        const isDesktop = this.state.isDesktop;
-        
         return (
             <div>
                 <CoinHeader coinName = {this.coinMeta.name} coinSymbol = {this.coinMeta.symbol} coinImage= {this.coinMeta.image}></CoinHeader>
@@ -98,79 +85,7 @@ class CoinPage extends Component {
                     </Tabs>
                 </AppBar>
                 <TabPanel value={this.state.value} index={0}>
-                    <Grid container spacing={3}>
-                        <Grid item sm={12} md={2}>
-                            { isDesktop ? (
-                            <Navbar collapseOnSelect bg="light" expand="lg">
-                                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                                <Navbar.Collapse id="basic-navbar-nav">
-                                    <Nav className="flex-column" style={{maxHeight: 400, overflow: 'scroll'}}>
-                                        <Navbar.Text>Key Metrics</Navbar.Text>
-                                        <Nav.Link style={{color: "black"}} href="">Galaxy Score™</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">AltRank™</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Correlation Rank</Nav.Link>
-                                        <Divider />
-                                        <Navbar.Text>Social Metrics</Navbar.Text>
-                                        <Nav.Link style={{color: "black"}} href="">Social Volume</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Social Engagement</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Social Contributors</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Social Dominance</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Average Sentiment</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Bullish Sentiment</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Bearish Sentiment</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Shared Links</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Twitter Volume</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Reddit Volume</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Medium Volume</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Youtube Volume</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">News Volume</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Spam Volume</Nav.Link>
-                                        <Divider />
-                                        <Navbar.Text>Trading Metrics</Navbar.Text>
-                                        <Nav.Link style={{color: "black"}} href="">Market Cap</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Market Dominance</Nav.Link>
-                                        <Nav.Link style={{color: "black"}} href="">Volatility</Nav.Link>
-                                    </Nav>
-                                </Navbar.Collapse>
-                            </Navbar> ) : (
-                                <Dropdown id="dropdown-basic-button" title="Choose Metric">
-                                    <Dropdown.Toggle id="dropdown-basic">
-                                        {this.state.selectedMetric}
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Header>Key Metrics</Dropdown.Header>
-                                        <Dropdown.Item href="">Galaxy Score™</Dropdown.Item>
-                                        <Dropdown.Item href="">AltRank™</Dropdown.Item>
-                                        <Dropdown.Item href="">Correlation Rank</Dropdown.Item>
-                                        <Dropdown.Divider />
-                                        <Dropdown.Header>Social Metrics</Dropdown.Header>
-                                        <Dropdown.Item href="">Social Volume</Dropdown.Item>
-                                        <Dropdown.Item href="">Social Engagement</Dropdown.Item>
-                                        <Dropdown.Item href="">Social Contributors</Dropdown.Item>
-                                        <Dropdown.Item href="">Social Dominance</Dropdown.Item>
-                                        <Dropdown.Item href="">Average Sentiment</Dropdown.Item>
-                                        <Dropdown.Item href="">Bullish Sentiment</Dropdown.Item>
-                                        <Dropdown.Item href="">Bearish Sentiment</Dropdown.Item>
-                                        <Dropdown.Item href="">Shared Links</Dropdown.Item>
-                                        <Dropdown.Item href="">Twitter Volume</Dropdown.Item>
-                                        <Dropdown.Item href="">Reddit Volume</Dropdown.Item>
-                                        <Dropdown.Item href="">Medium Volume</Dropdown.Item>
-                                        <Dropdown.Item href="">Youtube Volume</Dropdown.Item>
-                                        <Dropdown.Item href="">News Volume</Dropdown.Item>
-                                        <Dropdown.Item href="">Spam Volume</Dropdown.Item>
-                                        <Dropdown.Divider />
-                                        <Dropdown.Header>Trading Metrics</Dropdown.Header>
-                                        <Dropdown.Item href="">Market Cap</Dropdown.Item>
-                                        <Dropdown.Item href="">Market Dominance</Dropdown.Item>
-                                        <Dropdown.Item href="">Volatility</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            )}
-                        </Grid>
-                        <Grid item sm={12} md={10}>
-                            <CoinChart value = {this.coinMeta.symbol} updatePage = {this.updatePage}></CoinChart>
-                        </Grid>
-                    </Grid>
+                    <CoinChartWithVolume value = {this.coinMeta.symbol} updatePage = {this.updatePage}></CoinChartWithVolume>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
                     
@@ -208,8 +123,7 @@ class CoinPage extends Component {
     }
 
     componentDidMount(){
-        this.updatePredicate();
-        window.addEventListener("resize", this.updatePredicate);
+        
     }
 }
 export default CoinPage;

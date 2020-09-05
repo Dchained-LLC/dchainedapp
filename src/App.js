@@ -3,40 +3,32 @@ import './App.css';
 import MarketsPage from './MarketsPage';
 import CoinPage from './CoinPage';
 
-class App extends Component {
-  state = {
-    page: 1,
-    value: '',
-    totalCoins: 0
-  }
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useParams
+} from "react-router-dom";
 
-  updatePage = (newPage, newValue, totalCoins) => {
-    this.setState({page: newPage, value: newValue, totalCoins: totalCoins})
-    this.render();
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.value = [];
+    this.totalCoins = 0;
   }
   
   render() {
-    if(this.state.page == 1) {
-      return this.drawPage1();
-    }
-    else if(this.state.page == 2) {
-      return this.drawPage2(this.state.value, this.state.totalCoins);
-    }
-  }
-
-  drawPage1() {
     return (
-      <div>
-        <MarketsPage updatePage = {this.updatePage}></MarketsPage>
-      </div>
-    );
-  }
-  
-  drawPage2(coin, totalCoins) {
-    return (
-      <div>
-        <CoinPage value = {coin} totalCoins = {totalCoins} updatePage = {this.updatePage}></CoinPage>
-      </div>
+      <Router>
+        <Switch>
+          <Route path="/coins/:coin" children={({ match }) => (
+              <CoinPage coin = {match.params.coin}></CoinPage>
+          )}/>
+          <Route path="/">
+              <MarketsPage updatePage = {this.updatePage}></MarketsPage>
+          </Route>
+        </Switch>
+      </Router>
     );
   }
 }

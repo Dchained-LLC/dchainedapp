@@ -111,7 +111,7 @@ class CoinFinancialInfo extends Component {
     }
   
     componentDidMount(){
-        fetch('https://api.lunarcrush.com/v2?data=assets&key=12jj7svid98m4xyvzmaalk4&symbol=' + this.value)
+        fetch('https://api.lunarcrush.com/v2?data=assets&key=12jj7svid98m4xyvzmaalk4&data_points=168&symbol=' + this.value)
         .then(function(response) {
             return response.json();
         })

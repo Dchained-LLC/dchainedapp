@@ -38,11 +38,11 @@ function TabPanel(props) {
 class CoinPage extends Component {
     constructor(props) {
         super(props);
-        this.updatePage = props.updatePage;
-        this.coinMeta = props.value;
-        this.totalCoins = props.totalCoins;
+        this.coin = props.coin;
         this.state= {
             value: 0,
+            coinMeta: [],
+            totalCoins: 0
         };
     }
 
@@ -62,10 +62,14 @@ class CoinPage extends Component {
     }
 
     render() {
+        if(this.state.coinMeta.length == 0) {
+            return <div>Loading...</div>;
+        }
+
         return (
             <div>
-                <CoinHeader coinName = {this.coinMeta.name} coinSymbol = {this.coinMeta.symbol} coinImage= {this.coinMeta.image}></CoinHeader>
-                <CoinFinancialInfo value = {this.coinMeta.symbol} totalCoins = {this.totalCoins}></CoinFinancialInfo>
+                <CoinHeader coinName = {this.state.coinMeta.name} coinSymbol = {this.state.coinMeta.symbol} coinImage= {this.state.coinMeta.image}></CoinHeader>
+                <CoinFinancialInfo value = {this.state.coinMeta.symbol} totalCoins = {this.state.totalCoins}></CoinFinancialInfo>
                 <AppBar position="static" color="default">
                     <Tabs
                     value={this.state.value}
@@ -81,11 +85,11 @@ class CoinPage extends Component {
                         <Tab label="ALTRank" {...this.a11yProps(2)} />
                         <Tab label="All Metrics" {...this.a11yProps(3)} />
                         <Tab label="Market Pairs" {...this.a11yProps(4)} />
-                        <Tab label={"About " + this.coinMeta.name} {...this.a11yProps(5)} />
+                        <Tab label={"About " + this.state.coinMeta.name} {...this.a11yProps(5)} />
                     </Tabs>
                 </AppBar>
                 <TabPanel value={this.state.value} index={0}>
-                    <CoinChartWithVolume value = {this.coinMeta.symbol} updatePage = {this.updatePage}></CoinChartWithVolume>
+                    <CoinChartWithVolume value = {this.state.coinMeta.symbol}></CoinChartWithVolume>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
                     
@@ -107,10 +111,10 @@ class CoinPage extends Component {
                 <Container>
                     <Row>
                         <Col xs={{span: 12, order: 12 }} md={{span: 8, order: 1 }}>
-                            <Feeds value={this.coinMeta.symbol}></Feeds>
+                            <Feeds value={this.state.coinMeta.symbol}></Feeds>
                         </Col>
                         <Col xs={{span: 12, order: 1 }} md={{span: 4, order: 12 }}>
-                            <CoinFinancialInfoBottom value={this.coinMeta.symbol} totalCoins = {this.totalCoins} coinMeta = {this.coinMeta}></CoinFinancialInfoBottom>
+                            <CoinFinancialInfoBottom totalCoins = {this.state.totalCoins} coinMeta = {this.state.coinMeta}></CoinFinancialInfoBottom>
                         </Col>
                     </Row>
                 </Container>
@@ -118,12 +122,22 @@ class CoinPage extends Component {
         );
     }
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.updatePredicate);
-    }
-
     componentDidMount(){
-        
+        fetch('https://api.lunarcrush.com/v2?data=meta&key=12jj7svid98m4xyvzmaalk4&type=full&symbol=' + this.coin)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(res => {
+            var myCoinMeta = res.data[0];
+            fetch('https://api.lunarcrush.com/v2?data=meta&key=12jj7svid98m4xyvzmaalk4&type=counts')
+            .then(function(response) {
+                return response.json();
+            })
+            .then(res => {
+                var totalNumberOfCoins = res.data.num_active_coins;
+                this.setState({coinMeta: myCoinMeta, totalCoins: totalNumberOfCoins});
+            })
+        })
     }
 }
 export default CoinPage;

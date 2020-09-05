@@ -97,16 +97,81 @@ class Feeds extends Component {
                         <ReactWordcloud callbacks={{getWordTooltip: word => `${word.text} - mentioned in ${(word.value/this.state.visiblePosts)*100}% of visible posts`,}} words={this.state.wordCloudData} />
                         <div>
                             <ul className='feedsList'>
-                            {this.state.feedsData.map((post, index) => (
-                                <li className='feedsListItem' key={post.url}>
-                                    <div className='postIconContainer'><div className='postIcon'><img style={{ width: 35, height: 35, borderRadius: '50%' }} src={post.profile_image}/></div></div>
-                                    <div className='postDataContainer'>
-                                        <div className='postDateTime'>{this.getDateFromTimestamp(post.time)}</div>
-                                        <h6 className='postBody'>{post.body}</h6>
-                                        <div className='postDateTime'>Social Score: {post.social_score} Retweets: {post.retweets} Likes: {post.likes}</div>
-                                    </div>
-                                </li>
-                            ))}
+                            {this.state.feedsData.map((post, index) => {
+                                if(post.type == 'twitter') {
+                                    return (
+                                        <li className='feedsListItem' key={post.url}>
+                                            <div className='postIconContainer'><div className='postIcon'><img style={{ width: 35, height: 35, borderRadius: '50%' }} src={post.profile_image}/></div></div>
+                                            <div className='postDataContainer'>
+                                                <div className='postDateTime'>{this.getDateFromTimestamp(post.time)}</div>
+                                                <h6 className='postBody'>{post.body}</h6>
+                                                <div className='postDateTime'>Social Score: {post.social_score} {post.retweets ? 'Retweets: ' + post.retweets : ''} {post.likes ? 'Likes: ' + post.likes : ''}</div>
+                                            </div>
+                                        </li>
+                                    );
+                                }
+                                else if(post.type == 'reddit') {
+                                    return (
+                                        <li className='feedsListItem' key={post.url}>
+                                            <div className='postIconContainer'><div className='postIcon'><img style={{ width: 35, height: 35, borderRadius: '50%' }} src={require('./assets/reddit-icon.svg')}/></div></div>
+                                            <div className='postDataContainer'>
+                                                <div className='postDateTime'>{this.getDateFromTimestamp(post.time)}</div>
+                                                <h5 className='postBody'>{post.title}</h5>
+                                                <h6 className='postBody'>{post.body}</h6>
+                                                <div className='postDateTime'>Social Score: {post.social_score}</div>
+                                            </div>
+                                        </li>
+                                    );
+                                }
+                                else if(post.type == 'news') {
+                                    return (
+                                        <li className='feedsListItem' key={post.url}>
+                                            <div className='postIconContainer'><div className='postIcon'><img style={{ width: 35, height: 35, borderRadius: '50%' }} src={post.thumbnail}/></div></div>
+                                            <div className='postDataContainer'>
+                                                <div className='postDateTime'>{this.getDateFromTimestamp(post.time)}</div>
+                                                <h5 className='postBody'>{post.title}</h5>
+                                                <div className='postDateTime'>Social Score: {post.social_score} {post.shares ? 'Shares: ' + post.shares : ''}</div>
+                                            </div>
+                                        </li>
+                                    );
+                                }
+                                else if(post.type == 'link') {
+                                    return (
+                                        <li className='feedsListItem' key={post.url}>
+                                            <div className='postIconContainer'><div className='postIcon'><img style={{ width: 35, height: 35, borderRadius: '50%' }} src={post.thumbnail}/></div></div>
+                                            <div className='postDataContainer'>
+                                                <div className='postDateTime'>{this.getDateFromTimestamp(post.time)}</div>
+                                                <h5 className='postBody'>{post.title}</h5>
+                                                <div className='postDateTime'>Social Score: {post.social_score} {post.shares ? 'Shares: ' + post.shares : ''}</div>
+                                            </div>
+                                        </li>
+                                    );
+                                }
+                                else if(post.type == 'medium') {
+                                    return (
+                                        <li className='feedsListItem' key={post.url}>
+                                            <div className='postIconContainer'><div className='postIcon'><img style={{ width: 35, height: 35, borderRadius: '50%' }} src={post.thumbnail}/></div></div>
+                                            <div className='postDataContainer'>
+                                                <div className='postDateTime'>{this.getDateFromTimestamp(post.time)}</div>
+                                                <h5 className='postBody'>{post.title}</h5>
+                                                <div className='postDateTime'>Social Score: {post.social_score} {post.shares ? 'Shares: ' + post.shares : ''}</div>
+                                            </div>
+                                        </li>
+                                    );
+                                }
+                                else if(post.type == 'youtube') {
+                                    return (
+                                        <li className='feedsListItem' key={post.url}>
+                                            <div className='postIconContainer'><div className='postIcon'><img style={{ width: 35, height: 35, borderRadius: '50%' }} src={post.thumbnail}/></div></div>
+                                            <div className='postDataContainer'>
+                                                <div className='postDateTime'>{this.getDateFromTimestamp(post.time)}</div>
+                                                <h5 className='postBody'>{post.title}</h5>
+                                                <div className='postDateTime'>Social Score: {post.social_score} {post.shares ? 'Shares: ' + post.shares : ''}</div>
+                                            </div>
+                                        </li>
+                                    );
+                                }
+                            })}
                             </ul>
                         </div>
                     </div>
@@ -131,10 +196,14 @@ class Feeds extends Component {
             for(var i=0; i<myData.length; i++ ) {
                 var body = myData[i].body;
                 var title = myData[i].title;
+                var desc = myData[i].description;
                 var words = [];
                 var thisPostWords = {};
                 if(body) {
                     words = body.split(" ");
+                }
+                else if(desc) {
+                    words = desc.split(" ");
                 }
                 else if(title) {
                     words = title.split(" ");

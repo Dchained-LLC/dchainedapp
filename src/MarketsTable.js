@@ -14,13 +14,14 @@ import FirstPage from '@material-ui/icons/FirstPage';
 import LastPage from '@material-ui/icons/LastPage';
 import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Container from '@material-ui/core/Container';
 import NumberFormat from 'react-number-format';
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import {
+    Redirect,
+} from "react-router-dom";
 
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
@@ -36,10 +37,14 @@ class MarketsTable extends Component {
         loading: false,
         marketsData: [],
         metaData: {},
+        redirect: false
     }
 
     handleRowClick = (event, rowData) => {
-        this.updatePage(2, this.state.metaData[rowData.s], Object.keys(this.state.metaData).length);
+        this.setState({
+            redirect: true,
+            coin: rowData.s
+        });
     };
 
     abbreviateNumber = (number) => {
@@ -107,6 +112,14 @@ class MarketsTable extends Component {
     }
 
     render() {
+        if(this.state.redirect) {
+            return <Redirect push to={'/coins/' + this.state.coin} />;
+        }
+
+        if(this.state.loading) {
+            return <div>Loading...</div>;
+        }
+
         const tableIcons = {
             Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
             Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -196,23 +209,22 @@ class MarketsTable extends Component {
     componentDidMount(){
         this.setState({ loading: true });
         fetch('https://api.lunarcrush.com/v2?data=meta&key=12jj7svid98m4xyvzmaalk4&type=full')
-            .then(function(response) {
-                return response.json();
-            })
-            .then(res => {
-                var myMap = res.data.reduce(function(map, obj) {
-                    map[obj.symbol] = obj;
-                    return map;
-                }, {});
-                fetch('https://api.lunarcrush.com/v2?data=market&key=12jj7svid98m4xyvzmaalk4&sort=mc&desc=true')
-                    .then(function(response) {
-                        return response.json();
-                    })
-                    .then(res => {
-                        this.setState({ metaData: myMap, marketsData: res.data, loading: false })
-                    })
-            })
-        
+        .then(function(response) {
+            return response.json();
+        })
+        .then(res => {
+            var myMap = res.data.reduce(function(map, obj) {
+                map[obj.symbol] = obj;
+                return map;
+            }, {});
+            fetch('https://api.lunarcrush.com/v2?data=market&key=12jj7svid98m4xyvzmaalk4&sort=mc&desc=true')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(res => {
+                    this.setState({ metaData: myMap, marketsData: res.data, loading: false })
+                })
+        })
     }
   }
   export default MarketsTable;

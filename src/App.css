@@ -309,3 +309,13 @@
   font-weight: bold;
   font-size: 1.3em;
 }
+
+.prevData {
+  font-size: 0.8em;
+}
+
+.backButton {
+  background-color: transparent;
+  margin-top: 0.5em;
+  border: none;
+}

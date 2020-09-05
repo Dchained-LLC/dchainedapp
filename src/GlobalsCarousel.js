@@ -116,7 +116,7 @@ class GlobalsCarousel extends Component {
             items.push({title: title, value: value, points: points});
 
             title = 'Social Sentiment';
-            value = <NumberFormat value={res.data.average_sentiment_24h} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'% Bullish'}/>;
+            value = <NumberFormat value={res.data.average_sentiment_24h} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={((res.data.average_sentiment_24h / 25) + 1) > 3 ? '% Bullish' : '% Bearish'}/>;
             points = [];
             for(var i = 0; i < timeSeries.length; i++) {
                 points.push({

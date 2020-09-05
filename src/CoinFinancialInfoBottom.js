@@ -15,7 +15,6 @@ import ArrowDownwardTwoToneIcon from '@material-ui/icons/ArrowDownwardTwoTone';
 class CoinFinancialInfoBottom extends Component {
     constructor(props) {
         super(props);
-        this.value = props.value;
         this.coinMeta = props.coinMeta;
         this.totalCoins = props.totalCoins;
         this.state = {
@@ -121,7 +120,7 @@ class CoinFinancialInfoBottom extends Component {
                             </div>
                             <div className='value'><NumberFormat value={this.state.assetsData.social_volume_global_1w} displayType={'text'} thousandSeparator={true} suffix={' Posts'}/></div>
                             <div style={{color: (this.state.assetsData.social_volume_1w_percent_change > 0 ? 'green' : 'red')}}>{this.state.assetsData.social_volume_1w_percent_change > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.social_volume_1w_percent_change} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
-                            <div><NumberFormat value={this.state.assetsData.social_volume_global_1w_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
+                            <div className='prevData'><NumberFormat value={this.state.assetsData.social_volume_global_1w_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
@@ -131,9 +130,9 @@ class CoinFinancialInfoBottom extends Component {
                                 <InfoOutlinedIcon color="disabled"/>
                                 <div className='myTooltip'>My tootltip</div>
                             </div>
-                            <div className='value'><NumberFormat value={this.state.assetsData.social_score_calc_24h} displayType={'text'} thousandSeparator={true}/></div>
-                            <div style={{color: (this.state.assetsData.social_score_calc_24h_percent > 0 ? 'green' : 'red')}}>{this.state.assetsData.social_score_calc_24h_percent > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.social_score_calc_24h_percent} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
-                            <div><NumberFormat value={this.state.assetsData.social_score_calc_24h_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
+                            <div className='value'><NumberFormat value={this.state.assetsData.social_score_1w} displayType={'text'} thousandSeparator={true}/></div>
+                            <div style={{color: (this.state.assetsData.social_score_1w_percent_change > 0 ? 'green' : 'red')}}>{this.state.assetsData.social_score_1w_percent_change > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.social_score_1w_percent_change} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
+                            <div className='prevData'><NumberFormat value={this.state.assetsData.social_score_1w_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
@@ -143,9 +142,9 @@ class CoinFinancialInfoBottom extends Component {
                                 <InfoOutlinedIcon color="disabled"/>
                                 <div className='myTooltip'>My tootltip</div>
                             </div>
-                            <div className='value'><NumberFormat value={this.state.assetsData.average_sentiment_1w} displayType={'text'} thousandSeparator={true}/></div>
+                            <div className='value'><NumberFormat value={(this.state.assetsData.average_sentiment_1w -1) * 25} displayType={'text'} thousandSeparator={true} decimalScale={2} suffix={this.state.assetsData.average_sentiment_1w > 3 ? '% Bullish' : '% Bearish'}/></div>
                             <div style={{color: (this.state.assetsData.average_sentiment_1w_percent_change > 0 ? 'green' : 'red')}}>{this.state.assetsData.average_sentiment_1w_percent_change > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.average_sentiment_1w_percent_change} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
-                            <div><NumberFormat value={this.state.assetsData.average_sentiment_1w_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
+                            <div className='prevData'><NumberFormat value={(this.state.assetsData.average_sentiment_1w_previous -1) * 25} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'% prev. 1w'}/></div>
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
@@ -155,9 +154,9 @@ class CoinFinancialInfoBottom extends Component {
                                 <InfoOutlinedIcon color="disabled"/>
                                 <div className='myTooltip'>My tootltip</div>
                             </div>
-                            <div className='value'><NumberFormat value={this.state.assetsData.social_contributors_calc_24h} displayType={'text'} thousandSeparator={true}/></div>
-                            <div style={{color: (this.state.assetsData.social_contributors_calc_24h_percent > 0 ? 'green' : 'red')}}>{this.state.assetsData.social_contributors_calc_24h_percent > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.social_contributors_calc_24h_percent} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
-                            <div><NumberFormat value={this.state.assetsData.social_contributors_calc_24h_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
+                            <div className='value'><NumberFormat value={this.state.assetsData.social_contributors_1w} displayType={'text'} thousandSeparator={true} suffix={' Per Hour'}/></div>
+                            <div style={{color: (this.state.assetsData.social_contributors_1w_percent_change > 0 ? 'green' : 'red')}}>{this.state.assetsData.social_contributors_1w_percent_change > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.social_contributors_1w_percent_change} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
+                            <div className='prevData'><NumberFormat value={this.state.assetsData.social_contributors_1w_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
@@ -168,8 +167,8 @@ class CoinFinancialInfoBottom extends Component {
                                 <div className='myTooltip'>My tootltip</div>
                             </div>
                             <div className='value'><NumberFormat value={this.state.assetsData.news_1w} displayType={'text'} thousandSeparator={true} suffix={' Articles'}/></div>
-                            <div style={{color: (this.state.assetsData.news_calc_24h_percent > 0 ? 'green' : 'red')}}>{this.state.assetsData.news_calc_24h_percent > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.news_calc_24h_percent} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
-                            <div><NumberFormat value={this.state.assetsData.news_calc_24h_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
+                            <div style={{color: (this.state.assetsData.news_1w_percent_change > 0 ? 'green' : 'red')}}>{this.state.assetsData.news_1w_percent_change > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.news_1w_percent_change} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
+                            <div className='prevData'><NumberFormat value={this.state.assetsData.news_1w_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
@@ -179,9 +178,9 @@ class CoinFinancialInfoBottom extends Component {
                                 <InfoOutlinedIcon color="disabled"/>
                                 <div className='myTooltip'>My tootltip</div>
                             </div>
-                            <div className='value'><NumberFormat value={this.state.assetsData.tweet_spam_calc_24h} displayType={'text'} thousandSeparator={true}/></div>
-                            <div style={{color: (this.state.assetsData.tweet_spam_calc_24h_percent > 0 ? 'green' : 'red')}}>{this.state.assetsData.tweet_spam_calc_24h_percent > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.tweet_spam_calc_24h_percent} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
-                            <div><NumberFormat value={this.state.assetsData.tweet_spam_calc_24h_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
+                            <div className='value'><NumberFormat value={this.state.assetsData.tweet_spam_1w} displayType={'text'} thousandSeparator={true} suffix={' Items'}/></div>
+                            <div style={{color: (this.state.assetsData.tweet_spam_1w_percent_change > 0 ? 'green' : 'red')}}>{this.state.assetsData.tweet_spam_1w_percent_change > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.tweet_spam_1w_percent_change} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
+                            <div className='prevData'><NumberFormat value={this.state.assetsData.tweet_spam_1w_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
@@ -191,9 +190,9 @@ class CoinFinancialInfoBottom extends Component {
                                 <InfoOutlinedIcon color="disabled"/>
                                 <div className='myTooltip'>My tootltip</div>
                             </div>
-                            <div className='value'><NumberFormat value={this.state.assetsData.url_shares_calc_24h} displayType={'text'} thousandSeparator={true}/></div>
-                            <div style={{color: (this.state.assetsData.url_shares_calc_24h_percent > 0 ? 'green' : 'red')}}>{this.state.assetsData.url_shares_calc_24h_percent > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.url_shares_calc_24h_percent} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
-                            <div><NumberFormat value={this.state.assetsData.url_shares_calc_24h_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
+                            <div className='value'><NumberFormat value={this.state.assetsData.url_shares_1w} displayType={'text'} thousandSeparator={true} suffix={' URLs'}/></div>
+                            <div style={{color: (this.state.assetsData.url_shares_1w_percent_change > 0 ? 'green' : 'red')}}>{this.state.assetsData.url_shares_1w_percent_change > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.url_shares_1w_percent_change} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
+                            <div className='prevData'><NumberFormat value={this.state.assetsData.url_shares_1w_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
@@ -205,7 +204,7 @@ class CoinFinancialInfoBottom extends Component {
                             </div>
                             <div className='value'><NumberFormat value={this.state.assetsData.social_dominance} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
                             <div style={{color: (this.state.assetsData.social_dominance_1w_percent_change > 0 ? 'green' : 'red')}}>{this.state.assetsData.social_dominance_1w_percent_change > 0 ? <ArrowUpwardTwoToneIcon fontSize="large" style={{ color: green[500] }}/> : <ArrowDownwardTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <NumberFormat value={this.state.assetsData.social_dominance_1w_percent_change} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'}/></div>
-                            <div><NumberFormat value={this.state.assetsData.social_dominance_1w_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
+                            <div className='prevData'><NumberFormat value={this.state.assetsData.social_dominance_1w_previous} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={' prev. 1w'}/></div>
                         </Paper>
                     </Grid>
                     <Grid item xs={12}>
@@ -227,7 +226,7 @@ class CoinFinancialInfoBottom extends Component {
     }
   
     componentDidMount(){
-        fetch('https://api.lunarcrush.com/v2?data=assets&key=12jj7svid98m4xyvzmaalk4&data_points=0&change=1w&interval=week&symbol=' + this.value)
+        fetch('https://api.lunarcrush.com/v2?data=assets&key=12jj7svid98m4xyvzmaalk4&data_points=0&change=1w&interval=week&symbol=' + this.coinMeta.symbol)
         .then(function(response) {
             return response.json();
         })

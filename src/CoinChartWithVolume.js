@@ -13,9 +13,10 @@ import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import { fitWidth } from "react-stockcharts/lib/helper";
-import { last } from "react-stockcharts/lib/utils";
+import { last, timeIntervalBarWidth } from "react-stockcharts/lib/utils";
 import { CrossHairCursor } from "react-stockcharts/lib/coordinates";
 import { HoverTooltip } from "react-stockcharts/lib/tooltip";
+import { utcDay } from "d3-time";
 
 import Navbar from 'react-bootstrap//Navbar';
 import Nav from 'react-bootstrap//Nav';
@@ -69,20 +70,27 @@ class CoinChartWithVolume extends Component {
         this.state = {
           dataPoints: [],
           isDesktop: false,
+          percentWidth: 0.8,
           selectedMetric: 'Galaxy Score™'
         };
         this.updatePredicate = this.updatePredicate.bind(this);
     }
 
     updatePredicate() {
-      this.setState({ isDesktop: window.innerWidth > 999 });
+      var myPercentWidth = 0.8;
+      var myIsDesktop = true;
+      if(window.innerWidth < 999) {
+        myPercentWidth = 0.95;
+        myIsDesktop = false;
+      }
+      this.setState({ isDesktop: myIsDesktop, percentWidth: myPercentWidth });
     }
 
     handleChartDataChange = (selected) => {
       this.setState({selectedMetric: selected});
     }
 
-    render() {    
+    render() {
       if (this.state.dataPoints.length == 0) {
         return <div>Loading...</div>
       }
@@ -101,6 +109,18 @@ class CoinChartWithVolume extends Component {
       const xExtents = [start, end];
 
       const isDesktop = this.state.isDesktop;
+
+      var width = window.innerWidth * this.state.percentWidth;
+      var margin = {left: 50, right: 50, top: 10, bottom: 30};
+      var gridWidth = width - margin.left - margin.right;
+
+      var showGrid = true;
+      var yGrid = showGrid ? { 
+          innerTickSize: -1 * gridWidth,
+          tickStrokeDasharray: 'Solid',
+          tickStrokeOpacity: 0.2,
+          tickStrokeWidth: 1
+      } : {};
       
       return (
         <Grid container spacing={3}>
@@ -111,30 +131,30 @@ class CoinChartWithVolume extends Component {
                   <Navbar.Collapse id="basic-navbar-nav">
                       <Nav className="flex-column" style={{maxHeight: 500, overflow: 'scroll'}}>
                           <Navbar.Text>Key Metrics</Navbar.Text>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Galaxy Score™')}} style={{color: "black"}} href="">Galaxy Score™</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('AltRank™')}} style={{color: "black"}} href="">AltRank™</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Correlation Rank')}} style={{color: "black"}} href="">Correlation Rank</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Galaxy Score™')}} className={this.state.selectedMetric == 'Galaxy Score™' ? 'selectedMetric' : null} style={{color: "black"}} href="">Galaxy Score™</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('AltRank™')}} className={this.state.selectedMetric == 'AltRank™' ? 'selectedMetric' : null} style={{color: "black"}} href="">AltRank™</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Correlation Rank')}} className={this.state.selectedMetric == 'Correlation Rank' ? 'selectedMetric' : null} style={{color: "black"}} href="">Correlation Rank</Nav.Link>
                           <Divider />
                           <Navbar.Text>Social Metrics</Navbar.Text>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Volume')}} style={{color: "black"}} href="">Social Volume</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Engagement')}} style={{color: "black"}} href="">Social Engagement</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Contributors')}} style={{color: "black"}} href="">Social Contributors</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Dominance')}} style={{color: "black"}} href="">Social Dominance</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Average Sentiment')}} style={{color: "black"}} href="">Average Sentiment</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Bullish Sentiment')}} style={{color: "black"}} href="">Bullish Sentiment</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('earish Sentiment')}} style={{color: "black"}} href="">Bearish Sentiment</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Shared Links')}} style={{color: "black"}} href="">Shared Links</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Twitter Volume')}} style={{color: "black"}} href="">Twitter Volume</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Reddit Volume')}} style={{color: "black"}} href="">Reddit Volume</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Medium Volume')}} style={{color: "black"}} href="">Medium Volume</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Youtube Volume')}} style={{color: "black"}} href="">Youtube Volume</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('News Volume')}} style={{color: "black"}} href="">News Volume</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Spam Volume')}} style={{color: "black"}} href="">Spam Volume</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Volume')}} className={this.state.selectedMetric == 'Social Volume' ? 'selectedMetric' : null} style={{color: "black"}} href="">Social Volume</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Engagement')}} className={this.state.selectedMetric == 'Social Engagement' ? 'selectedMetric' : null} style={{color: "black"}} href="">Social Engagement</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Contributors')}} className={this.state.selectedMetric == 'Social Dominance' ? 'selectedMetric' : null} style={{color: "black"}} href="">Social Contributors</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Dominance')}} className={this.state.selectedMetric == 'AltRank™' ? 'selectedMetric' : null} style={{color: "black"}} href="">Social Dominance</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Average Sentiment')}} className={this.state.selectedMetric == 'Average Sentiment' ? 'selectedMetric' : null} style={{color: "black"}} href="">Average Sentiment</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Bullish Sentiment')}} className={this.state.selectedMetric == 'Bullish Sentiment' ? 'selectedMetric' : null} style={{color: "black"}} href="">Bullish Sentiment</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Bearish Sentiment')}} className={this.state.selectedMetric == 'Bearish Sentiment' ? 'selectedMetric' : null} style={{color: "black"}} href="">Bearish Sentiment</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Shared Links')}} className={this.state.selectedMetric == 'Shared Links' ? 'selectedMetric' : null} style={{color: "black"}} href="">Shared Links</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Twitter Volume')}} className={this.state.selectedMetric == 'Twitter Volume' ? 'selectedMetric' : null} style={{color: "black"}} href="">Twitter Volume</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Reddit Volume')}} className={this.state.selectedMetric == 'Reddit Volume' ? 'selectedMetric' : null} style={{color: "black"}} href="">Reddit Volume</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Medium Volume')}} className={this.state.selectedMetric == 'Medium Volume' ? 'selectedMetric' : null} style={{color: "black"}} href="">Medium Volume</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Youtube Volume')}} className={this.state.selectedMetric == 'Youtube Volume' ? 'selectedMetric' : null} style={{color: "black"}} href="">Youtube Volume</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('News Volume')}} className={this.state.selectedMetric == 'News Volume' ? 'selectedMetric' : null} style={{color: "black"}} href="">News Volume</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Spam Volume')}} className={this.state.selectedMetric == 'Spam Volume' ? 'selectedMetric' : null} style={{color: "black"}} href="">Spam Volume</Nav.Link>
                           <Divider />
                           <Navbar.Text>Trading Metrics</Navbar.Text>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Market Cap')}} style={{color: "black"}} href="">Market Cap</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Market Dominance')}} style={{color: "black"}} href="">Market Dominance</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Volatility')}} style={{color: "black"}} href="">Volatility</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Market Cap')}} className={this.state.selectedMetric == 'Market Cap' ? 'selectedMetric' : null} style={{color: "black"}} href="">Market Cap</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Market Dominance')}} className={this.state.selectedMetric == 'Market Dominance' ? 'selectedMetric' : null} style={{color: "black"}} href="">Market Dominance</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Volatility')}} className={this.state.selectedMetric == 'Volatility' ? 'selectedMetric' : null} style={{color: "black"}} href="">Volatility</Nav.Link>
                       </Nav>
                   </Navbar.Collapse>
               </Navbar> ) : (
@@ -173,10 +193,12 @@ class CoinChartWithVolume extends Component {
               )}
           </Grid>
           <Grid item sm={12} md={10}>
+            <div className='chartContainer'>
+            
             <ChartCanvas 
               height={500}
-              ratio={5}
-              width={window.innerWidth * .8}
+              //ratio={0}
+              width={window.innerWidth * this.state.percentWidth}
               zoomEvent={false}
               panEvent={false}
               margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
@@ -189,9 +211,9 @@ class CoinChartWithVolume extends Component {
               xExtents={xExtents}
             >
       
-              <Chart id={1} height={290} yExtents={d => [d.high, d.low]} >
-                <YAxis axisAt="left" orient="left" ticks={5}/>
-                <XAxis axisAt="bottom" orient="bottom" showTicks={false}/>
+              <Chart id={1} height={290} yExtents={d => [d.high + (.05 * d.high), d.low - (.05 * d.low)]} >
+                <YAxis axisAt="left" orient="left" {...yGrid}/>
+                <XAxis axisAt="bottom" orient="bottom" showTicks={true}/>
                 <CandlestickSeries />
                 <HoverTooltip 
                   yAccessor={d => d.volume}
@@ -199,17 +221,19 @@ class CoinChartWithVolume extends Component {
                   fontSize={15}
                 />
               </Chart>
-              <Chart id={2} height={290} yExtents={d => d.metric_value}>
-                  <YAxis axisAt="right" orient="right" ticks={5}/>
+              <Chart id={2} height={290} yExtents={d => [d.metric_value + (.1 * d.metric_value), d.metric_value - (.1 * d.metric_value)]}>
+                  <YAxis axisAt="right" orient="right"/>
                   <LineSeries yAccessor={d => d.metric_value} />
               </Chart>
               <Chart id={3} origin={(w, h) => [0, h - 150]} height={150} yExtents={d => d.volume}>
                 <XAxis axisAt="bottom" orient="bottom"/>
-                <YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
+                <YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")} {...yGrid}/>
                 <BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
               </Chart>
               <CrossHairCursor/>
             </ChartCanvas>
+            
+            </div>
           </Grid>
       </Grid>
       );
@@ -264,11 +288,11 @@ class CoinChartWithVolume extends Component {
           metricLabel = 'Average Sentiment';
         }
         else if(this.state.selectedMetric == 'Bullish Sentiment') {
-          metricValue = timeSeries[i].galaxy_score;
+          metricValue = timeSeries[i].tweet_sentiment4 + timeSeries[i].tweet_sentiment5;
           metricLabel = 'Bullish Sentiment';
         }
         else if(this.state.selectedMetric == 'Bearish Sentiment') {
-          metricValue = timeSeries[i].galaxy_score;
+          metricValue = timeSeries[i].tweet_sentiment1 + timeSeries[i].tweet_sentiment2;
           metricLabel = 'Bearish Sentiment';
         }
         else if(this.state.selectedMetric == 'Shared Links') {
@@ -284,11 +308,11 @@ class CoinChartWithVolume extends Component {
           metricLabel = 'Reddit Volume';
         }
         else if(this.state.selectedMetric == 'Medium Volume') {
-          metricValue = timeSeries[i].galaxy_score;
+          metricValue = timeSeries[i].medium;
           metricLabel = 'Medium Volume';
         }
         else if(this.state.selectedMetric == 'Youtube Volume') {
-          metricValue = timeSeries[i].galaxy_score;
+          metricValue = timeSeries[i].youtube;
           metricLabel = 'Youtube Volume';
         }
         else if(this.state.selectedMetric == 'News Volume') {

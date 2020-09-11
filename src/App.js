@@ -21,11 +21,11 @@ class App extends Component {
     return (
       <Router>
         <Switch>
-          <Route path="/coins/:coin" children={({ match }) => (
-              <CoinPage coin = {match.params.coin}></CoinPage>
+          <Route path="/coins/:coin" children={({ match, location }) => (
+              <CoinPage coin = {match.params.coin} search={location.search}></CoinPage>
           )}/>
           <Route path="/">
-              <MarketsPage updatePage = {this.updatePage}></MarketsPage>
+              <MarketsPage></MarketsPage>
           </Route>
         </Switch>
       </Router>

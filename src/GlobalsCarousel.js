@@ -4,7 +4,6 @@ import LineChart from 'react-svg-line-chart';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Container from '@material-ui/core/Container';
 import NumberFormat from 'react-number-format';
 import 'fontsource-roboto';
 

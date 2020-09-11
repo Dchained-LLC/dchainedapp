@@ -211,12 +211,12 @@ class CoinFinancialInfoBottom extends Component {
                         <Paper className='myPaper' elevation={3}>
                             <div className='titleSmall'>Summary</div>
                             <div dangerouslySetInnerHTML={{__html: this.coinMeta.short_summary}}></div><br/>
-                            <div><a href={this.coinMeta.github_link}>Github</a></div>
-                            <div><a href={this.coinMeta.whitepaper_link}>Whitepaper</a></div>
-                            <div><a href={this.coinMeta.twitter_link}>Twitter</a></div>
-                            <div><a href={this.coinMeta.reddit_link}>Reddit</a></div>
-                            <div><a href={this.coinMeta.telegram_link}>Telegram</a></div><br/>
-                            <div>View Details</div>
+                            {this.coinMeta.github_link ? <div><a href={this.coinMeta.github_link}>Github</a></div> : '' }
+                            {this.coinMeta.whitepaper_link ? <div><a href={this.coinMeta.whitepaper_link}>Whitepaper</a></div> : '' }
+                            {this.coinMeta.twitter_link ? <div><a href={this.coinMeta.twitter_link}>Twitter</a></div> : '' }
+                            {this.coinMeta.reddit_link ? <div><a href={this.coinMeta.reddit_link}>Reddit</a></div> : '' }
+                            {this.coinMeta.telegram_link ? <div><a href={this.coinMeta.telegram_link}>Telegram</a></div> : '' }
+                            <div className='viewDetailsButton'>View Details</div>
                         </Paper>
                     </Grid>
                 </Grid>

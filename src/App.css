@@ -319,3 +319,85 @@
   margin-top: 0.5em;
   border: none;
 }
+
+.viewDetailsButton {
+  max-width: 100px;
+  margin-top: 1em;
+  padding: 0.5em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+  text-align: center;
+}
+
+.viewDetailsButton:hover {
+  background-color: #CCCCCC;
+  cursor: hand;
+  cursor: pointer;
+}
+
+.myPaperNoHover {
+  border-radius: 5px;
+  border: 1px solid #CCCCCC;
+  padding: 1em;
+}
+
+.linkTitle {
+  font-weight: 700;
+}
+
+.linkItem {
+  color: #12c7ff;
+  text-decoration: none;
+}
+
+.linkContainer {
+  margin-bottom: 1em;
+}
+
+.linkItem:hover {
+  color: #12c7ff;
+  text-decoration: none;
+}
+
+.linkItem:visited {
+  color: #12c7ff;
+  text-decoration: none;
+}
+
+.infoTitle {
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.infoText {
+  font-size: 0.9em;
+  margin-bottom: 2em;
+  text-align: justify;
+}
+
+.infoText a {
+  color: #12c7ff;
+}
+
+.infoText a:hover {
+  color: #12c7ff;
+  text-decoration: none;
+}
+
+.infoText a:visited {
+  color: #12c7ff;
+  text-decoration: none;
+}
+
+.selectedMetric {
+  background-color: #CCCCCC;
+}
+
+.chartContainer {
+  width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}

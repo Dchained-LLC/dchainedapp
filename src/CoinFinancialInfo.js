@@ -11,7 +11,8 @@ class CoinFinancialInfo extends Component {
         this.value = props.value;
         this.totalCoins = props.totalCoins;
         this.state = {
-            assetsData: {}
+            assetsData: {},
+            range: props.range
         }
     }
 
@@ -72,7 +73,28 @@ class CoinFinancialInfo extends Component {
         return nsign < 0 ? '-'+num : num;
     }
 
+    getChangeValue = (myRange, myData) => {
+        switch(myRange) {
+            case '1D':
+                return myData.close_1d_percent_change;
+            case '1W':
+                return myData.close_1w_percent_change;
+            case '1M':
+                return myData.close_1m_percent_change;
+            case '3M':
+                return myData.close_3m_percent_change;
+            case '6M':
+                return myData.close_6m_percent_change;
+            case '1Y':
+                return myData.close_1y_percent_change;
+            default:
+                return myData.close_1w_percent_change;
+        }
+    };
+
     render() {
+        var changeValue = this.getChangeValue(this.state.range, this.state.assetsData);
+
         return (
             <div>
                 <CssBaseline />
@@ -84,8 +106,8 @@ class CoinFinancialInfo extends Component {
                         <div style={{textAlign: 'center'}}><NumberFormat value={this.state.assetsData.price_btc} decimalScale={8} fixedDecimalScale={true} displayType={'text'} thousandSeparator={true} suffix={' BTC'}/></div>
                     </Grid>
                     <Grid item xs={6} sm={2}>
-                        <div style={{fontSize: '0.8em', textAlign: 'center'}}>% Change 1W</div>
-                        <div style={{fontWeight: 'bold', fontSize: '1.5em', textAlign: 'center', color: (this.state.assetsData.percent_change_7d > 0) ? 'green' : 'red'}}><NumberFormat value={this.state.assetsData.percent_change_7d} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'} /></div>
+                        <div style={{fontSize: '0.8em', textAlign: 'center'}}>% Change {this.state.range}</div>
+                        <div style={{fontWeight: 'bold', fontSize: '1.5em', textAlign: 'center', color: (changeValue > 0) ? 'green' : 'red'}}><NumberFormat value={changeValue} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'%'} /></div>
                         <div style={{textAlign: 'center'}}><NumberFormat value={this.state.assetsData.percent_change_24h} decimalScale={2} displayType={'text'} thousandSeparator={true} suffix={'% 24h'} /></div>
                     </Grid>
                     <Grid item xs={6} sm={2}>
@@ -111,7 +133,7 @@ class CoinFinancialInfo extends Component {
     }
   
     componentDidMount(){
-        fetch('https://api.lunarcrush.com/v2?data=assets&key=12jj7svid98m4xyvzmaalk4&data_points=168&symbol=' + this.value)
+        fetch('https://api.lunarcrush.com/v2?data=assets&key=12jj7svid98m4xyvzmaalk4&data_points=0&change=' + this.state.range.toLowerCase() + '&symbol=' + this.value)
         .then(function(response) {
             return response.json();
         })
@@ -119,6 +141,19 @@ class CoinFinancialInfo extends Component {
             var myData = res.data[0];
             this.setState({assetsData: myData});
         });
-	}
+    }
+    
+    componentDidUpdate(prevProps, prevState) {
+        if(prevState.range != this.props.range) {
+            fetch('https://api.lunarcrush.com/v2?data=assets&key=12jj7svid98m4xyvzmaalk4&data_points=0&change=' + this.props.range.toLowerCase() + '&symbol=' + this.value)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(res => {
+                var myData = res.data[0];
+                this.setState({range: this.props.range, assetsData: myData});
+            });
+        }
+    }
 }
 export default CoinFinancialInfo;

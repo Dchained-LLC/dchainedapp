@@ -215,6 +215,16 @@
 
 .myPaper {
   padding: 1em;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.theContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .titleBig {
@@ -227,16 +237,18 @@
   font-weight: bold;
   font-size: 1.1em;
   display: inline-block;
-  width: 50%;
+  width: 100%;
+  margin-bottom: 0.2em;
+}
+
+.shortDescription {
+  text-align: justify;
 }
 
 .information {
   position: relative;
   display: inline-block;
-  margin-left: 2em;
   border-radius: 50%;
-  padding: 0.5em;
-  top: -10px;
 }
 
 .information:hover {
@@ -259,8 +271,8 @@
   padding: 1em;
   border-radius: 6px;
   position: absolute;
-  left: -50px;
-  top: 50px;
+  left: -200px;
+  top: 30px;
   width: 250px;
   z-index: 999;
   background-color: white;
@@ -294,14 +306,7 @@
   font-size: 1.5em;
 }
 
-.altRankData {
-  position: relative;
-}
-
 .rankChange {
-  position: absolute;
-  right: 0px;
-  top: 20%;
   text-align: right;
 }
 
@@ -400,4 +405,50 @@
 
 body {
   overflow-x: hidden;
+}
+
+.galaxyScore {
+  display: inline-block;
+  background: linear-gradient(180deg, #5821D3, #ED3C3C);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.altRank {
+  display: inline-block;
+  background: linear-gradient(180deg, #21C4D3, #1cd80b);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.galaxyScoreSmall {
+  display: inline-block;
+  background: linear-gradient(180deg, #5821D3, #ED3C3C);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  margin-top: 5px;
+  margin-right: 5px;
+}
+
+.altRankSmall {
+  display: inline-block;
+  background: linear-gradient(180deg, #21C4D3, #1cd80b);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  margin-top: 5px;
+  margin-right: 5px;
+}
+
+.flexDirRow {
+  flex-direction: row !important;
 }

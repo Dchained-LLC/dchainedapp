@@ -61,6 +61,13 @@ function tooltipContent() {
 	};
 };
 
+function arrayEquals(a, b) {
+  return Array.isArray(a) &&
+    Array.isArray(b) &&
+    a.length === b.length &&
+    a.every((val, index) => val === b[index]);
+}
+
 
 class CoinChartWithVolume extends Component {
     constructor(props) {
@@ -68,10 +75,12 @@ class CoinChartWithVolume extends Component {
         this.value = props.value;
         this.updatePage = props.updatePage;
         this.state = {
+          firstLoad: true,
           dataPoints: [],
           isDesktop: false,
           percentWidth: 0.8,
-          selectedMetric: 'Galaxy Score™'
+          selectedMetric: 'Galaxy Score™',
+          range: props.range
         };
         this.updatePredicate = this.updatePredicate.bind(this);
     }
@@ -138,8 +147,8 @@ class CoinChartWithVolume extends Component {
                           <Navbar.Text>Social Metrics</Navbar.Text>
                           <Nav.Link onClick={e => {this.handleChartDataChange('Social Volume')}} className={this.state.selectedMetric == 'Social Volume' ? 'selectedMetric' : null} style={{color: "black"}} href="">Social Volume</Nav.Link>
                           <Nav.Link onClick={e => {this.handleChartDataChange('Social Engagement')}} className={this.state.selectedMetric == 'Social Engagement' ? 'selectedMetric' : null} style={{color: "black"}} href="">Social Engagement</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Contributors')}} className={this.state.selectedMetric == 'Social Dominance' ? 'selectedMetric' : null} style={{color: "black"}} href="">Social Contributors</Nav.Link>
-                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Dominance')}} className={this.state.selectedMetric == 'AltRank™' ? 'selectedMetric' : null} style={{color: "black"}} href="">Social Dominance</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Contributors')}} className={this.state.selectedMetric == 'Social Contributors' ? 'selectedMetric' : null} style={{color: "black"}} href="">Social Contributors</Nav.Link>
+                          <Nav.Link onClick={e => {this.handleChartDataChange('Social Dominance')}} className={this.state.selectedMetric == 'Social Dominance' ? 'selectedMetric' : null} style={{color: "black"}} href="">Social Dominance</Nav.Link>
                           <Nav.Link onClick={e => {this.handleChartDataChange('Average Sentiment')}} className={this.state.selectedMetric == 'Average Sentiment' ? 'selectedMetric' : null} style={{color: "black"}} href="">Average Sentiment</Nav.Link>
                           <Nav.Link onClick={e => {this.handleChartDataChange('Bullish Sentiment')}} className={this.state.selectedMetric == 'Bullish Sentiment' ? 'selectedMetric' : null} style={{color: "black"}} href="">Bullish Sentiment</Nav.Link>
                           <Nav.Link onClick={e => {this.handleChartDataChange('Bearish Sentiment')}} className={this.state.selectedMetric == 'Bearish Sentiment' ? 'selectedMetric' : null} style={{color: "black"}} href="">Bearish Sentiment</Nav.Link>
@@ -244,110 +253,142 @@ class CoinChartWithVolume extends Component {
     window.addEventListener("resize", this.updatePredicate);
   }
 
-  componentWillUpdate () {
-    fetch('https://api.lunarcrush.com/v2?data=assets&key=12jj7svid98m4xyvzmaalk4&data_points=168&symbol=' + this.value)
-		.then(function(response) {
-			return response.json();
-		})
-		.then(res => {
-      var timeSeries = res.data[0].timeSeries;
-      var myDataPoints = [];
-      for (var i = 0; i < timeSeries.length; i++) {
-        var metricValue = timeSeries[i].galaxy_score;
-        var metricLabel = 'Galaxy Score™';
-        if(this.state.selectedMetric == 'Galaxy Score™') {
-          metricValue = timeSeries[i].galaxy_score;
-          metricLabel = 'Galaxy Score™';
+  getCriteria = (newRange) => {
+    var interval = 'hour';
+    var numOfPoints = 168;
+
+    if(this.state.range == '1D') {
+      interval = 'hour';
+      numOfPoints = 24;
+    }
+    else if(this.state.range == '1M') {
+      interval = 'day';
+      numOfPoints = 30;
+    }
+    else if(this.state.range == '3M') {
+      interval = 'day';
+      numOfPoints = 90;
+    }
+    else if(this.state.range == '6M') {
+      interval = 'day';
+      numOfPoints = 180;
+    }
+    else if(this.state.range == '1Y') {
+      interval = 'day';
+      numOfPoints = 365;
+    }
+
+    return {interval, numOfPoints};
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if(this.state.firstLoad || (prevState.selectedMetric != this.state.selectedMetric) || (prevState.range != this.props.range)) {
+      var {interval, numOfPoints } = this.getCriteria(this.props.range);
+
+      fetch('https://api.lunarcrush.com/v2?data=assets&key=12jj7svid98m4xyvzmaalk4&data_points=' + numOfPoints + '&interval=' + interval + '&symbol=' + this.value)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(res => {
+        var timeSeries = res.data[0].timeSeries;
+        var myDataPoints = [];
+        for (var i = 0; i < timeSeries.length; i++) {
+          var metricValue = timeSeries[i].galaxy_score;
+          var metricLabel = 'Galaxy Score™';
+          if(this.state.selectedMetric == 'Galaxy Score™') {
+            metricValue = timeSeries[i].galaxy_score;
+            metricLabel = 'Galaxy Score™';
+          }
+          else if(this.state.selectedMetric == 'AltRank™') {
+            metricValue = timeSeries[i].alt_rank;
+            metricLabel = 'AltRank™';
+          }
+          else if(this.state.selectedMetric == 'Correlation Rank') {
+            metricValue = timeSeries[i].correlation_rank;
+            metricLabel = 'Correlation Rank';
+          }
+          else if(this.state.selectedMetric == 'Social Volume') {
+            metricValue = timeSeries[i].social_volume;
+            metricLabel = 'Social Volume';
+          }
+          else if(this.state.selectedMetric == 'Social Engagement') {
+            metricValue = timeSeries[i].social_score;
+            metricLabel = 'Social Engagement';
+          }
+          else if(this.state.selectedMetric == 'Social Contributors') {
+            metricValue = timeSeries[i].social_contributors;
+            metricLabel = 'Social Contributors';
+          }
+          else if(this.state.selectedMetric == 'Social Dominance') {
+            metricValue = timeSeries[i].social_dominance;
+            metricLabel = 'Social Dominance';
+          }
+          else if(this.state.selectedMetric == 'Average Sentiment') {
+            metricValue = timeSeries[i].average_sentiment;
+            metricLabel = 'Average Sentiment';
+          }
+          else if(this.state.selectedMetric == 'Bullish Sentiment') {
+            metricValue = timeSeries[i].tweet_sentiment4 + timeSeries[i].tweet_sentiment5;
+            metricLabel = 'Bullish Sentiment';
+          }
+          else if(this.state.selectedMetric == 'Bearish Sentiment') {
+            metricValue = timeSeries[i].tweet_sentiment1 + timeSeries[i].tweet_sentiment2;
+            metricLabel = 'Bearish Sentiment';
+          }
+          else if(this.state.selectedMetric == 'Shared Links') {
+            metricValue = timeSeries[i].unique_url_shares;
+            metricLabel = 'Shared Links';
+          }
+          else if(this.state.selectedMetric == 'Twitter Volume') {
+            metricValue = timeSeries[i].tweets;
+            metricLabel = 'Twitter Volume';
+          }
+          else if(this.state.selectedMetric == 'Reddit Volume') {
+            metricValue = timeSeries[i].reddit_posts;
+            metricLabel = 'Reddit Volume';
+          }
+          else if(this.state.selectedMetric == 'Medium Volume') {
+            metricValue = timeSeries[i].medium;
+            metricLabel = 'Medium Volume';
+          }
+          else if(this.state.selectedMetric == 'Youtube Volume') {
+            metricValue = timeSeries[i].youtube;
+            metricLabel = 'Youtube Volume';
+          }
+          else if(this.state.selectedMetric == 'News Volume') {
+            metricValue = timeSeries[i].news;
+            metricLabel = 'News Volume';
+          }
+          else if(this.state.selectedMetric == 'Spam Volume') {
+            metricValue = timeSeries[i].tweet_spam;
+            metricLabel = 'pam Volume';
+          }
+          else if(this.state.selectedMetric == 'Market Cap') {
+            metricValue = timeSeries[i].market_cap;
+            metricLabel = 'Market Cap';
+          }
+          else if(this.state.selectedMetric == 'Market Dominance') {
+            metricValue = timeSeries[i].market_dominance;
+            metricLabel = 'Market Dominance';
+          }
+          else if(this.state.selectedMetric == 'Volatility') {
+            metricValue = timeSeries[i].volatility;
+            metricLabel = 'Volatility';
+          }
+          myDataPoints.push({
+            date: new Date(timeSeries[i].time * 1000),
+            open: timeSeries[i].open, 
+            high: timeSeries[i].high,
+            low: timeSeries[i].low,
+            close: timeSeries[i].close,
+            volume: timeSeries[i].volume,
+            metric_label: metricLabel,
+            metric_value: metricValue
+          });
         }
-        else if(this.state.selectedMetric == 'AltRank™') {
-          metricValue = timeSeries[i].alt_rank;
-          metricLabel = 'AltRank™';
-        }
-        else if(this.state.selectedMetric == 'Correlation Rank') {
-          metricValue = timeSeries[i].correlation_rank;
-          metricLabel = 'Correlation Rank';
-        }
-        else if(this.state.selectedMetric == 'Social Volume') {
-          metricValue = timeSeries[i].social_volume;
-          metricLabel = 'Social Volume';
-        }
-        else if(this.state.selectedMetric == 'Social Engagement') {
-          metricValue = timeSeries[i].social_score;
-          metricLabel = 'Social Engagement';
-        }
-        else if(this.state.selectedMetric == 'Social Contributors') {
-          metricValue = timeSeries[i].social_contributors;
-          metricLabel = 'Social Contributors';
-        }
-        else if(this.state.selectedMetric == 'Social Dominance') {
-          metricValue = timeSeries[i].social_dominance;
-          metricLabel = 'Social Dominance';
-        }
-        else if(this.state.selectedMetric == 'Average Sentiment') {
-          metricValue = timeSeries[i].average_sentiment;
-          metricLabel = 'Average Sentiment';
-        }
-        else if(this.state.selectedMetric == 'Bullish Sentiment') {
-          metricValue = timeSeries[i].tweet_sentiment4 + timeSeries[i].tweet_sentiment5;
-          metricLabel = 'Bullish Sentiment';
-        }
-        else if(this.state.selectedMetric == 'Bearish Sentiment') {
-          metricValue = timeSeries[i].tweet_sentiment1 + timeSeries[i].tweet_sentiment2;
-          metricLabel = 'Bearish Sentiment';
-        }
-        else if(this.state.selectedMetric == 'Shared Links') {
-          metricValue = timeSeries[i].unique_url_shares;
-          metricLabel = 'Shared Links';
-        }
-        else if(this.state.selectedMetric == 'Twitter Volume') {
-          metricValue = timeSeries[i].tweets;
-          metricLabel = 'Twitter Volume';
-        }
-        else if(this.state.selectedMetric == 'Reddit Volume') {
-          metricValue = timeSeries[i].reddit_posts;
-          metricLabel = 'Reddit Volume';
-        }
-        else if(this.state.selectedMetric == 'Medium Volume') {
-          metricValue = timeSeries[i].medium;
-          metricLabel = 'Medium Volume';
-        }
-        else if(this.state.selectedMetric == 'Youtube Volume') {
-          metricValue = timeSeries[i].youtube;
-          metricLabel = 'Youtube Volume';
-        }
-        else if(this.state.selectedMetric == 'News Volume') {
-          metricValue = timeSeries[i].news;
-          metricLabel = 'News Volume';
-        }
-        else if(this.state.selectedMetric == 'Spam Volume') {
-          metricValue = timeSeries[i].tweet_spam;
-          metricLabel = 'pam Volume';
-        }
-        else if(this.state.selectedMetric == 'Market Cap') {
-          metricValue = timeSeries[i].market_cap;
-          metricLabel = 'Market Cap';
-        }
-        else if(this.state.selectedMetric == 'Market Dominance') {
-          metricValue = timeSeries[i].market_dominance;
-          metricLabel = 'Market Dominance';
-        }
-        else if(this.state.selectedMetric == 'Volatility') {
-          metricValue = timeSeries[i].volatility;
-          metricLabel = 'Volatility';
-        }
-        myDataPoints.push({
-          date: new Date(timeSeries[i].time * 1000),
-          open: timeSeries[i].open, 
-          high: timeSeries[i].high,
-          low: timeSeries[i].low,
-          close: timeSeries[i].close,
-          volume: timeSeries[i].volume,
-          metric_label: metricLabel,
-          metric_value: metricValue
-        });
-      }
-      this.setState({dataPoints: myDataPoints});
-		});
+        this.setState({dataPoints: myDataPoints, range: this.props.range, firstLoad: false});
+      });
+    }
   }
 
 }

@@ -39,6 +39,7 @@ class CoinHeader extends Component {
         }
     }
 
+
     render() {
         return (
             <div>
@@ -80,6 +81,6 @@ class CoinHeader extends Component {
   
     componentDidMount(){
         
-	}
+    }
 }
 export default CoinHeader;

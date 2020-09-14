@@ -17,6 +17,10 @@ import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import MarketPairsTable from './MarketsPairsTable';
+import { withStyles } from "@material-ui/core/styles";
+import AllMetrics from './AllMetrics';
+import GalaxyScore from './GalaxyScore';
+import AltRank from './AltRank';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -38,15 +42,23 @@ function TabPanel(props) {
     );
   }
 
+  const styles = {
+    iconLabelWrapper: {
+      flexDirection: "row",
+      marginTop: -3
+    }
+};
+
 class CoinPage extends Component {
     constructor(props) {
         super(props);
         this.coin = props.coin;
         this.state= {
-            value: 0,
+            value: new URLSearchParams(props.search).get('section') ? parseInt(new URLSearchParams(props.search).get('section')) : 0,
             coinMeta: [],
+            assetsData: [],
             totalCoins: 0,
-            range: new URLSearchParams(props.search).get('range')
+            range: new URLSearchParams(props.search).get('range') ? new URLSearchParams(props.search).get('range') : '1W'
         };
     }
 
@@ -74,10 +86,12 @@ class CoinPage extends Component {
             return <div>Loading...</div>;
         }
 
+        const { classes } = this.props;
+
         return (
             <div>
                 <CoinHeader range = {this.state.range} coinName = {this.state.coinMeta.name} coinSymbol = {this.state.coinMeta.symbol} coinImage= {this.state.coinMeta.image}></CoinHeader>
-                <CoinFinancialInfo value = {this.state.coinMeta.symbol} totalCoins = {this.state.totalCoins}></CoinFinancialInfo>
+                <CoinFinancialInfo value = {this.state.coinMeta.symbol} totalCoins = {this.state.totalCoins} range = {this.state.range}></CoinFinancialInfo>
                 <AppBar position="static" color="default">
                     <Tabs
                     value={this.state.value}
@@ -89,15 +103,15 @@ class CoinPage extends Component {
                     aria-label="scrollable auto tabs example"
                     >
                         <Tab label="Summary" {...this.a11yProps(0)} />
-                        <Tab label="Galaxy Score" {...this.a11yProps(1)} />
-                        <Tab label="ALTRank" {...this.a11yProps(2)} />
+                        <Tab label={"Galaxy Score (" + this.state.assetsData.galaxy_score + "/100)"} icon={<span className='galaxyScoreSmall'><img style={{ width: 15, height: 15, position: "relative", top: '2px' }} src={require('./assets/galaxy-icon.svg')}/></span>} classes={{ wrapper: classes.iconLabelWrapper }} {...this.a11yProps(1)} />
+                        <Tab label={"ALTRank (" + this.state.assetsData.alt_rank + "/" + this.state.totalCoins + ")"} icon={<span className='altRankSmall'><img style={{ width: 15, height: 15, position: "relative", top: '2px' }} src={require('./assets/trophy-icon.svg')}/></span>} classes={{ wrapper: classes.iconLabelWrapper}} {...this.a11yProps(2)} />
                         <Tab label="All Metrics" {...this.a11yProps(3)} />
                         <Tab label="Market Pairs" {...this.a11yProps(4)} />
                         <Tab label={"About " + this.state.coinMeta.name} {...this.a11yProps(5)} />
                     </Tabs>
                 </AppBar>
                 <TabPanel value={this.state.value} index={0}>
-                    <CoinChartWithVolume value = {this.state.coinMeta.symbol}></CoinChartWithVolume>
+                    <CoinChartWithVolume value = {this.state.coinMeta.symbol} range={this.state.range}></CoinChartWithVolume>
                     <Divider />
                     <br/>
                     <Row>
@@ -105,18 +119,18 @@ class CoinPage extends Component {
                             <Feeds value={this.state.coinMeta.symbol}></Feeds>
                         </Col>
                         <Col xs={{span: 12, order: 1 }} md={{span: 5, order: 12 }}>
-                            <CoinFinancialInfoBottom totalCoins = {this.state.totalCoins} coinMeta = {this.state.coinMeta}></CoinFinancialInfoBottom>
+                            <CoinFinancialInfoBottom totalCoins = {this.state.totalCoins} coinMeta = {this.state.coinMeta} range = {this.state.range} tabSelector={this.setValue}></CoinFinancialInfoBottom>
                         </Col>
                     </Row>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
-                    
+                    <GalaxyScore coin = {this.state.coinMeta.symbol} range = {this.state.range}></GalaxyScore>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={2}>
-                    
+                    <AltRank coin = {this.state.coinMeta.symbol} range = {this.state.range} totalCoins = {this.state.totalCoins}></AltRank>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={3}>
-                    
+                    <AllMetrics coin = {this.state.coinMeta.symbol} range = {this.state.range}></AllMetrics>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={4}>
                     <MarketPairsTable coin={this.state.coinMeta.symbol}></MarketPairsTable>
@@ -162,9 +176,23 @@ class CoinPage extends Component {
             })
             .then(res => {
                 var totalNumberOfCoins = res.data.num_active_coins;
-                this.setState({coinMeta: myCoinMeta, totalCoins: totalNumberOfCoins});
+                fetch('https://api.lunarcrush.com/v2?data=assets&key=12jj7svid98m4xyvzmaalk4&data_points=168&symbol=' + this.coin)
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(res => {
+                    var myData = res.data[0];
+                    this.setState({coinMeta: myCoinMeta, totalCoins: totalNumberOfCoins, assetsData: myData});
+                })
             })
         })
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        var newRange = new URLSearchParams(this.props.search).get('range') ? new URLSearchParams(this.props.search).get('range') : '1W'
+        if(prevState.range != newRange) {
+            this.setRange(newRange);
+        }
+    }
 }
-export default CoinPage;
+export default withStyles(styles)(CoinPage);

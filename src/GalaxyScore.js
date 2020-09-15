@@ -159,15 +159,13 @@ class GalaxyScore extends Component {
                                                     <CartesianGrid strokeDasharray="1" vertical={false} />
                                                     <XAxis dataKey="time" tickFormatter={dateFormatter} minTickGap={10}/>
                                                     <YAxis yAxisId="avg_sent" label={{ value: 'Social Sentiment', angle: -90, position: 'insideBottomLeft' }} tickFormatter={formatter}/>
-                                                    <YAxis yAxisId="ts2" orientation="right" label={{ value: 'Bearish Posts', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ rigth: 0 }}/>
-                                                    <YAxis yAxisId="ts3" orientation="right" label={{ value: 'Neutral Posts', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ left: 10 }}/>
-                                                    <YAxis yAxisId="ts4" orientation="right" label={{ value: 'Bullish Posts', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ left: 10 }}/>
+                                                    <YAxis yAxisId="ts2" orientation="right" label={{ value: 'Posts', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ rigth: 0 }}/>
                                                     <Tooltip formatter={(value, name) => formatter(value)} labelFormatter={(value) => dateFormatter(value)}/>
                                                     <Legend />
                                                     <Line yAxisId="avg_sent" name="Average Sentiment" type="monotone" dataKey="average_sentiment" stroke="#0000ff" dot={false} />
                                                     <Line yAxisId="ts2" name="Bearish Posts" type="monotone" dataKey="tweet_sentiment_impact2" stroke="#ff0000" dot={false} />
-                                                    <Line yAxisId="ts3" name="Neutral Posts" type="monotone" dataKey="tweet_sentiment_impact3" stroke="#00ff00" dot={false} />
-                                                    <Line yAxisId="ts4" name="Bullish Posts" type="monotone" dataKey="tweet_sentiment_impact4" stroke="#777777" dot={false} />
+                                                    <Line yAxisId="ts2" name="Neutral Posts" type="monotone" dataKey="tweet_sentiment_impact3" stroke="#00ff00" dot={false} />
+                                                    <Line yAxisId="ts2" name="Bullish Posts" type="monotone" dataKey="tweet_sentiment_impact4" stroke="#777777" dot={false} />
                                                 </LineChart>
                                             </ResponsiveContainer>  
                                         </Box>
@@ -185,13 +183,49 @@ class GalaxyScore extends Component {
                                                     <CartesianGrid strokeDasharray="1" vertical={false} />
                                                     <XAxis dataKey="time" tickFormatter={dateFormatter} minTickGap={10}/>
                                                     <YAxis yAxisId="si" label={{ value: 'Social Impact', angle: -90, position: 'insideBottomLeft' }} tickFormatter={formatter}/>
-                                                    <YAxis yAxisId="se" orientation="right" label={{ value: 'Social Engagement', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ rigth: 0 }}/>
-                                                    <YAxis yAxisId="sv" orientation="right" label={{ value: 'Social Volume', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ left: 10 }}/>
                                                     <Tooltip formatter={(value, name) => formatter(value)} labelFormatter={(value) => dateFormatter(value)}/>
                                                     <Legend />
                                                     <Line yAxisId="si" name="Social Impact" type="monotone" dataKey="social_impact_score" stroke="#0000ff" dot={false} />
-                                                    <Line yAxisId="sv" name="Social Engagement" type="monotone" dataKey="social_score" stroke="#ff0000" dot={false} />
-                                                    <Line yAxisId="se" name="Social Volume" type="monotone" dataKey="social_volume_global" stroke="#00ff00" dot={false} />
+                                                </LineChart>
+                                            </ResponsiveContainer>  
+                                        </Box>
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12}>          
+                                    <Paper className='myPaperNoHover' elevation={3}>
+                                        <Typography variant="h6" noWrap>
+                                            Social Engagement
+                                        </Typography>
+                                        <Box component="div" style={{ width: '100%', height: 350 }} mt={1}>
+                                            <ResponsiveContainer>
+                                                <LineChart data={this.state.assetsData}
+                                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                                    <CartesianGrid strokeDasharray="1" vertical={false} />
+                                                    <XAxis dataKey="time" tickFormatter={dateFormatter} minTickGap={10}/>
+                                                    <YAxis yAxisId="se" label={{ value: 'Social Engagement', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ rigth: 0 }}/>
+                                                    <Tooltip formatter={(value, name) => formatter(value)} labelFormatter={(value) => dateFormatter(value)}/>
+                                                    <Legend />
+                                                    <Line yAxisId="se" name="Social Engagement" type="monotone" dataKey="social_score" stroke="#ff0000" dot={false} />
+                                                </LineChart>
+                                            </ResponsiveContainer>  
+                                        </Box>
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12}>          
+                                    <Paper className='myPaperNoHover' elevation={3}>
+                                        <Typography variant="h6" noWrap>
+                                            Social Volume
+                                        </Typography>
+                                        <Box component="div" style={{ width: '100%', height: 350 }} mt={1}>
+                                            <ResponsiveContainer>
+                                                <LineChart data={this.state.assetsData}
+                                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                                    <CartesianGrid strokeDasharray="1" vertical={false} />
+                                                    <XAxis dataKey="time" tickFormatter={dateFormatter} minTickGap={10}/>
+                                                    <YAxis yAxisId="sv" label={{ value: 'Social Volume', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ left: 10 }}/>
+                                                    <Tooltip formatter={(value, name) => formatter(value)} labelFormatter={(value) => dateFormatter(value)}/>
+                                                    <Legend />
+                                                    <Line yAxisId="sv" name="Social Volume" type="monotone" dataKey="social_volume_global" stroke="#00ff00" dot={false} />
                                                 </LineChart>
                                             </ResponsiveContainer>  
                                         </Box>

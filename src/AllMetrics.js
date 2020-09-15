@@ -87,15 +87,13 @@ class AllMetrics extends Component {
                                             <CartesianGrid strokeDasharray="1" vertical={false} />
                                             <XAxis dataKey="time" tickFormatter={dateFormatter} minTickGap={10}/>
                                             <YAxis yAxisId="avg_sent" label={{ value: 'Social Sentiment', angle: -90, position: 'insideBottomLeft' }} tickFormatter={formatter}/>
-                                            <YAxis yAxisId="ts2" orientation="right" label={{ value: 'Bearish Posts', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ rigth: 0 }}/>
-                                            <YAxis yAxisId="ts3" orientation="right" label={{ value: 'Neutral Posts', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ left: 10 }}/>
-                                            <YAxis yAxisId="ts4" orientation="right" label={{ value: 'Bullish Posts', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ left: 10 }}/>
+                                            <YAxis yAxisId="ts2" orientation="right" label={{ value: 'Posts', angle: -90, position: 'insideRight' }} tickFormatter={formatter} padding={{ rigth: 0 }}/>
                                             <Tooltip formatter={(value, name) => formatter(value)} labelFormatter={(value) => dateFormatter(value)}/>
                                             <Legend />
                                             <Line yAxisId="avg_sent" name="Average Sentiment" type="monotone" dataKey="average_sentiment" stroke="#0000ff" dot={false} />
                                             <Line yAxisId="ts2" name="Bearish Posts" type="monotone" dataKey="tweet_sentiment_impact2" stroke="#ff0000" dot={false} />
-                                            <Line yAxisId="ts3" name="Neutral Posts" type="monotone" dataKey="tweet_sentiment_impact3" stroke="#00ff00" dot={false} />
-                                            <Line yAxisId="ts4" name="Bullish Posts" type="monotone" dataKey="tweet_sentiment_impact4" stroke="#777777" dot={false} />
+                                            <Line yAxisId="ts2" name="Neutral Posts" type="monotone" dataKey="tweet_sentiment_impact3" stroke="#00ff00" dot={false} />
+                                            <Line yAxisId="ts2" name="Bullish Posts" type="monotone" dataKey="tweet_sentiment_impact4" stroke="#777777" dot={false} />
                                         </LineChart>
                                     </ResponsiveContainer>  
                                 </Box>

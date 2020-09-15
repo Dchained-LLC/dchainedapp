@@ -222,7 +222,7 @@ class CoinChartWithVolume extends Component {
       
               <Chart id={1} height={290} yExtents={d => [d.high + (.05 * d.high), d.low - (.05 * d.low)]} >
                 <YAxis axisAt="left" orient="left" {...yGrid}/>
-                <XAxis axisAt="bottom" orient="bottom" showTicks={true}/>
+                <XAxis axisAt="bottom" orient="bottom" showTicks={true} ticks={5}/>
                 <CandlestickSeries />
                 <HoverTooltip 
                   yAccessor={d => d.volume}
@@ -235,7 +235,7 @@ class CoinChartWithVolume extends Component {
                   <LineSeries yAccessor={d => d.metric_value} />
               </Chart>
               <Chart id={3} origin={(w, h) => [0, h - 150]} height={150} yExtents={d => d.volume}>
-                <XAxis axisAt="bottom" orient="bottom"/>
+                <XAxis axisAt="bottom" orient="bottom" ticks={5}/>
                 <YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")} {...yGrid}/>
                 <BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
               </Chart>

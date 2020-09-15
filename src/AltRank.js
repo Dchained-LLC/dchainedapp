@@ -104,11 +104,11 @@ class AltRank extends Component {
                                         <div><span className='score'>{this.state.globalData.alt_rank}</span><span className='scoreTotal'>/{this.state.totalCoins}</span></div>
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <div className='rankChange'>24 hour change<br/>{(this.state.globalData.alt_rank_calc_24h_previous - this.state.globalData.alt_rank) > 0 ? <ArrowDropUpTwoToneIcon fontSize="large" style={{ color: green[500] }}/>: <ArrowDropDownTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <span style={{color: ((this.state.globalData.alt_rank_calc_24h_previous - this.state.assetsData.alt_rank) > 0 ? 'green' : 'red')}}>{(this.state.globalData.alt_rank_calc_24h_previous - this.state.globalData.alt_rank)} spots</span></div>
+                                        <div className='rankChange'>24 hour change<br/>{(this.state.globalData.alt_rank_calc_24h_previous - this.state.globalData.alt_rank) > 0 ? <ArrowDropUpTwoToneIcon fontSize="large" style={{ color: green[500] }}/>: <ArrowDropDownTwoToneIcon fontSize="large" style={{ color: red[500] }}/>} <span style={{color: ((this.state.globalData.alt_rank_calc_24h_previous - this.state.globalData.alt_rank) > 0 ? 'green' : 'red')}}>{(this.state.globalData.alt_rank_calc_24h_previous - this.state.globalData.alt_rank)} spots</span></div>
                                     </Grid>
                                 </Grid>
                                 <div><strong>Lower ranks</strong> <span>are better</span></div>
-                                <Box component="div" style={{ width: '100%', height: 230 }} mt={1}>
+                                <Box component="div" style={{ width: '100%', height: 245 }} mt={1}>
                                     <ResponsiveContainer>
                                         <RadarChart data={radarData}>
                                             <PolarGrid />
